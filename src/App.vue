@@ -13,7 +13,7 @@
     {
       id: 'id2',
       content: "learn Vue",
-      done: false,
+      done: true,
     },
   ]);
 
@@ -27,6 +27,17 @@
       };
       todos.value.push(newTodo);
       newTodoContent.value = '';
+  };
+
+  const removeTodo = id => {
+    todos.value = todos.value.filter(todo => {
+      return todo.id !== id;
+    });
+  };
+
+  const toggleTodo = id => {
+    const index = todos.value.findIndex(todo => todo.id === id);
+    todos.value[index].done = !todos.value[index].done;
   }
 </script>
 
@@ -46,14 +57,28 @@
     </div>
     </form>
     
-    <div v-for="todo in todos" :key="todo.id" class="card mb-5">
+    <div v-for="todo in todos"
+    :key="todo.id"
+    class="card mb-5"
+    :class="{'has-background-success-light': todo.done}"
+    
+    >
       <div class="card-content">
         <div class="content">
           <div class="columns is-mobile is-vcentered">
-            <div class="column">{{ todo.content }}</div>
+            <div
+            class="column"
+            :class="{'has-text-success line-through': todo.done}"
+            >{{ todo.content }}</div>
             <div class="column is-5 has text-tight">
-              <button class="button is-light">&check;</button>
-              <button class="button is-danger ml-2">&cross;</button>
+              <button
+              @click="(toggleTodo(todo.id))"
+              class="button is-light"
+              :class="todo.done ? 'is-success' : 'is-light'"
+              >&check;</button>
+              <button
+              @click="removeTodo(todo.id)"
+              class="button is-danger ml-2">&cross;</button>
             </div>
           </div>
         </div>
@@ -67,5 +92,9 @@
 .wrapper-todo {
   margin: 0 auto;
   max-width: 400px;
+}
+
+.line-through {
+  text-decoration: line-through;
 }
 </style>
